@@ -42,7 +42,8 @@ public class HelloJSP extends HttpServlet {
 	 * 
 	 * 사용자의 요청정보를 객체로 저장하여 파라메터로 전달
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request
+							, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		

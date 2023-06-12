@@ -14,7 +14,7 @@
         position: relative; background-color:#ffffff; top:0px;
         border:1px solid gray; padding:10px; color:black;
     }
-    .off{
+    .off{ 
     display: none;
     }
 </style>
