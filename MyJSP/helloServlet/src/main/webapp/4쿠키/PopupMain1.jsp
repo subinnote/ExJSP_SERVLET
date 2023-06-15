@@ -1,4 +1,4 @@
-<%@page import="util.CookieManager"%>
+<%@page import="utils.CookieManager"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -19,30 +19,34 @@
 window.onload = function(){
 	if(typeof closeBtn != 'undefined'){
 		closeBtn.onclick = function(){
-			// 체크박스가 체크되었으면 popFrm폼을 서브밋 처리 -> PopupCookie.jsp 요청
-			// 쿠키를 생성 후 PopupMain1로 redirect 해줍니다.
+			
 			if(document.querySelector("#inactiveToday").checked){
+				// 체크박스가 체크 되었으면 popFrm폼을 서브밋 처리 -> PopupCookie.jsp요청
 				popFrm.submit();
-			}else{
-				popup.style.display = 'none';
+				
+			} else {
+				popup.style.display = 'none';			
 			}
+			
 		}
 	}
 }
 
 </script>
-<title>쿠키를 이용한 팝업창 제어 ver 1.0</title>
+<title>쿠키를 이용한 팝업창 제어 ver 1.0 </title>
 </head>
 <body>
+
 	<h1>쿠키를 이용한 팝업창 제어</h1>
-	<%
-	// 쿠키에 PopupClose값이 등록되어있지 않으면 팝업창을 보여줌
-	String cValue = CookieManager.readCookie(request, "PopupClose");
 	
+	<%
+	// 쿠키에 PopupClose값이 등록 되어 있지 않으면 팝업창을 보여줌
+	String cValue = CookieManager.readCookie(request, "PopupClose");
+
 	if(!cValue.equals("Y")){
-		
+	
 	%>
-	<div id="popup">
+    <div id="popup" >
         <h2 align="center">공지사항 팝업입니다.</h2>
         <div align="right">
 	        <form name="popFrm" action="PopupCookie.jsp">
@@ -52,6 +56,9 @@ window.onload = function(){
 	        </form>
         </div>
     </div>
-  <%}%>
+    <%
+    }
+	%>
+    
 </body>
 </html>

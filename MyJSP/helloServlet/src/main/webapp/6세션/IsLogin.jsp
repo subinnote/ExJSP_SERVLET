@@ -7,15 +7,16 @@
 <title>Insert title here</title>
 </head>
 <body>
-<%
-	// 세션무효화
-	session.invalidate();
 
-	// 세션아이디 새로 발급
-	request.getSession(true);
-	
-	// 메인페이지로 이동
-	response.sendRedirect("gogreen.jsp");
+<%
+if(session.getAttribute("UserId") == null){
+%>
+	<script>
+		alert("로그인 후 이용 가능한 메뉴입니다.")
+		location.href = "LoginForm.jsp";
+	</script>
+<%
+}
 %>
 </body>
 </html>

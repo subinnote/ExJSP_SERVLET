@@ -3,15 +3,15 @@ package dto;
 public class Member {
 
 	// 멤버 변수 선언
-	private String id;
-	private String pass;
-	private String name;
-	private String regidate;
+    private String id;
+    private String pass;
+    private String name;
+    private String regidate;
 	
 	public Member() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public Member(String id, String pass, String name, String regidate) {
 		super();
 		this.id = id;
@@ -19,6 +19,8 @@ public class Member {
 		this.name = name;
 		this.regidate = regidate;
 	}
+
+
 
 	public String getId() {
 		return id;
@@ -51,7 +53,5 @@ public class Member {
 	public void setRegidate(String regidate) {
 		this.regidate = regidate;
 	}
-
-	
 
 }
