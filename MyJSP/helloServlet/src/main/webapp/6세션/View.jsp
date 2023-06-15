@@ -1,3 +1,4 @@
+<%@page import="common.JSFunction"%>
 <%@page import="dao.BoardDao"%>
 <%@page import="dto.Board"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -14,11 +15,7 @@
 	Board board = dao.selectOne(request.getParameter("num"));
 	
 	if(board == null){
-		out.print("<script>");
-		out.print("alert('게시글이 존재하지 않습니다.')");
-		out.print("history.go(-1);");
-		out.print("</script>");
-		
+		JSFunction.alertBack("게시글이 존재하지 않습니다.", out);		
 		return;
 	}
 %>
@@ -56,13 +53,19 @@
 		</tr>
 		<tr>
 			<td>내용</td>
-			<td colspan='3'><%=board.getContent() %></td>
+			<td colspan='3' hegiht='100'><%=board.getContent() %></td>
 		</tr>
 		<tr>
 			<td colspan='4' align="center">
 			<input type='button' onclick="location.href='Board.jsp'" value="목록보기">
-			<button onclick="locaion.href='Edit.jsp'?num=<%=board.getNum() %>">수정하기</button>
-			<button >삭제하기</button>
+			<%
+                // 로그인한 아이디와 글쓴이가 같으면 수정,삭제 버튼 활성화
+                if(session.getAttribute("UserId") != null
+                	&& board.getId().equals(session.getAttribute("UserId"))){
+            %>
+			<button type='button' onclick="location.href='Edit.jsp?num=<%=board.getNum() %>'">수정하기</button>
+			<button onclick="deletePost()">삭제하기</button>
+			<% } %>
 			</td>
 		</tr>
 	</table>
