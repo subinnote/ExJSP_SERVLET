@@ -15,13 +15,23 @@
 	BoardDao dao = new BoardDao();
 	int res = dao.delete(num);
 	
-	if(res > 0){
-		// 성공 : 메세지 출력 리스트로 이동
-		JSFunction.alertLocation("게시글이 삭제되었습니다.", "Board.jsp", out);
+	if(res>0){
+		// 삭제 성공 : 메세지 출력후 리스트로 이동
+		JSFunction.alertLocation("삭제 되었습니다.", "Board.jsp", out);
 	} else {
-		// 실패 : 메세지 출력
-		JSFunction.alertBack("게시글 삭제에 실패하였습니다.", out);
+		// 삭제 실패
+		JSFunction.alertBack("삭제중 오류가 발생 하였습니다.", out);
 	}
 %>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+

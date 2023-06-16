@@ -16,115 +16,113 @@ public class NewBoardDao {
 	public NewBoardDao() {
 		// TODO Auto-generated constructor stub
 	}
+
 	public List<Board> getList(Criteria criteria){
 		List<Board> list = new ArrayList<>();
+		String sql = "select num, title, content, id, visitcount"
+				+ "				, decode(trunc(sysdate)"
+				+ "				, trunc(postdate)"
+				+ "				, to_char(postdate, 'hh24:mi:ss')"
+				+ "				, to_char(postdate, 'yyyy-mm-dd'))  postdate "
+				+ "     from board ";
 		
-		String sql =   "		select num, title, content, id, visitcount"
-					+ "                         , decode(trunc(sysdate)"
-					+ "						    , trunc(postdate)"
-					+ "						    , to_char(postdate, 'hh24:mi:ss')"
-					+ "							, to_char(postdate, 'yyyy-mm-dd')) postdate"
-					+ "          from          board ";
-		
-		
-		// 검색어가 입력된 경우 검색조건을 추가합니다.
+		// 검색어가 입력 된경우 검색조건을 추가 합니다
 		if(criteria.getSearchWord() != null
 				&& !"".equals(criteria.getSearchWord())) {
 			sql += "where "+criteria.getSearchField()
-					+" like '%"+criteria.getSearchWord()+"%'";	
+						+" like '%"+criteria.getSearchWord()+"%'";
 		}
 		
-		sql += "order by num desc";
+		sql += " order by num desc";
 		
 		try (Connection conn = DBConnPool.getConnection();
-			 PreparedStatement psmt = conn.prepareStatement(sql);){
+				PreparedStatement psmt = conn.prepareStatement(sql);){
 			
-			ResultSet rs = psmt.executeQuery(); 
+			ResultSet rs = psmt.executeQuery();
 			
-			// 게시글의 수만큼 반복
 			while(rs.next()) {
-				// 게시물의 한행을 DTO에 저장
 				Board board = new Board();
-				
-				board.setNum(rs.getString("num"));
-				board.setTitle(rs.getString("title"));
 				board.setContent(rs.getString("content"));
 				board.setId(rs.getString("id"));
+				board.setNum(rs.getString("num"));
 				board.setPostdate(rs.getString("postdate"));
+				board.setTitle(rs.getString("title"));
 				board.setVisitcount(rs.getString("visitcount"));
 				
-				list.add(board); // 결과 목록에 저장
+				list.add(board);
 			}
-		
-		
+			
 		} catch (SQLException e) {
-			System.out.println("게시물 조회 중 예외 발생");
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 		return list;
 	}
+	
 	public List<Board> getListPage(Criteria criteria){
 		List<Board> list = new ArrayList<>();
-		
-		String sql = "select * from ("
-				+ "    select rownum rn, t.* from ("
+		String sql = 
+				"select * from ("
+				+ "  select rownum rn, t.* from ("
 				+ "		select num, title, content, id, visitcount"
-				+ "                         , decode(trunc(sysdate)"
-				+ "						    , trunc(postdate)"
-				+ "						    , to_char(postdate, 'hh24:mi:ss')"
-				+ "							, to_char(postdate, 'yyyy-mm-dd')) postdate"
-				+ "          from          board ";
-				
+				+ "				, decode(trunc(sysdate)"
+				+ "				, trunc(postdate)"
+				+ "				, to_char(postdate, 'hh24:mi:ss')"
+				+ "				, to_char(postdate, 'yyyy-mm-dd'))  postdate "
+				+ "     from board ";
 		
-		
-		// 검색어가 입력된 경우 검색조건을 추가합니다.
+		// 검색어가 입력 된경우 검색조건을 추가 합니다
 		if(criteria.getSearchWord() != null
 				&& !"".equals(criteria.getSearchWord())) {
 			sql += "where "+criteria.getSearchField()
-					+" like '%"+criteria.getSearchWord()+"%'";	
+						+" like '%"+criteria.getSearchWord()+"%'";
 		}
+		sql += "order by num desc"
+				+ "    )t"
+				+ ")"
+				+ "where rn between "
+				+ criteria.getStartNo()
+				+ " and "
+				+ criteria.getEndNo();
 		
-		sql += "order by num desc) t ) where rn between "
-				+ criteria.getStartNo()+" and "+criteria.getEndNo();
+		
 		
 		try (Connection conn = DBConnPool.getConnection();
-			 PreparedStatement psmt = conn.prepareStatement(sql);){
+				PreparedStatement psmt = conn.prepareStatement(sql);){
 			
-			ResultSet rs = psmt.executeQuery(); 
+			ResultSet rs = psmt.executeQuery();
 			
-			// 게시글의 수만큼 반복
 			while(rs.next()) {
-				// 게시물의 한행을 DTO에 저장
 				Board board = new Board();
-				
-				board.setNum(rs.getString("num"));
-				board.setTitle(rs.getString("title"));
 				board.setContent(rs.getString("content"));
 				board.setId(rs.getString("id"));
+				board.setNum(rs.getString("num"));
 				board.setPostdate(rs.getString("postdate"));
+				board.setTitle(rs.getString("title"));
 				board.setVisitcount(rs.getString("visitcount"));
 				
-				list.add(board); // 결과 목록에 저장
+				list.add(board);
 			}
-		
-		
+			
 		} catch (SQLException e) {
-			System.out.println("게시물 조회 중 예외 발생");
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 		return list;
 	}
 	
 	public int insert(Board board) {
 		int res = 0;
-		String sql =   "insert into board  "
-				+ "		(num, title, content, id, postdate, visitcount) " 
-				+ "values (seq_board_num.nextval, "
-				+ "			?, ?, ?, sysdate, 0)";
-				
+		String sql = "insert into board "
+				+ "values (seq_board_num.nextval, ?, ?, ?, sysdate, 0)";
 		
 		try (Connection conn = DBConnPool.getConnection();
 				PreparedStatement psmt = conn.prepareStatement(sql);){
+			
 			psmt.setString(1, board.getTitle());
 			psmt.setString(2, board.getContent());
 			psmt.setString(3, board.getId());
@@ -135,15 +133,17 @@ public class NewBoardDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		return res;
 	}
 	
 	public Board selectOne(String num) {
 		String sql = "select * from board where num=?";
 		Board board = null;
+		
+		System.out.println("num : "+num);
 		try (Connection conn = DBConnPool.getConnection();
 				PreparedStatement psmt = conn.prepareStatement(sql);){
-			
 			psmt.setString(1, num);
 			ResultSet rs = psmt.executeQuery();
 			
@@ -156,14 +156,16 @@ public class NewBoardDao {
 				board.setTitle(rs.getString("title"));
 				board.setVisitcount(rs.getString("visitcount"));
 			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		return board;
 	}
 	
-	public void updatevisitCount(String num) {
+	public void updateVisitCount(String num) {
 		String sql = "update board set visitcount=visitcount+1 where num=?";
 		
 		
@@ -177,6 +179,53 @@ public class NewBoardDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
+	}
+	
+	public int getTotlaCnt(Criteria criteria) {
+		int res = 0;
+		String sql = "select count(*) from board ";
+		if(criteria.getSearchWord() != null 
+				&& !"".equals(criteria.getSearchWord())) {
+			sql += "where "+criteria.getSearchField()
+					+" = '%"+criteria.getSearchWord()+"%'";
+		}
+		
+		try (Connection conn = DBConnPool.getConnection();
+				PreparedStatement psmt = conn.prepareStatement(sql);){
+			
+			ResultSet rs = psmt.executeQuery();
+			if(rs.next()) {
+				res = rs.getInt(1);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return res;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
